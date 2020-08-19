@@ -36,16 +36,16 @@
   (org-capture))
 
 ;; Only works if there's already an other frame:
-;; (defun make-capture-frame ()
-;;   "Create a new frame and run org-capture."
-;;   (interactive)
-;;   (make-frame '((name . "capture")
-;;                 (width . 90)
-;;                 (height . 20)
-;;                 (minibuffer . t)
-;;                 (window-system . x)
-;;                 ))
-;;   (activate-capture-frame))
+(defun make-capture-frame ()
+  "Create a new frame and run org-capture."
+  (interactive)
+  (make-frame '((name . "capture")
+                (width . 90)
+                (height . 20)
+                (minibuffer . t)
+                (window-system . x)
+                ))
+  (activate-capture-frame))
 
 (provide 'org-global-capture)
 
