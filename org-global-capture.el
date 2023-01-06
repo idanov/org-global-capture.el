@@ -7,6 +7,8 @@
 
 ;; activated by a keybinding to
 ;; emacsclient -c -F '(quote (name . "capture"))' -e '(activate-capture-frame)'
+;; activated as a org-roam-capture buffer by a keybinding to
+;; emacsclient -c -F '(quote (name . "capture"))' -e '(activate-capture-frame t)'
 
 ;;; Code:
 
@@ -29,11 +31,13 @@
   (when (equal "capture" (frame-parameter nil 'name))
     (delete-frame)))
 
-(defun activate-capture-frame ()
+(defun activate-capture-frame (&optional (is-roam nil))
   "run org-capture in capture frame"
+  :type '(boolean)
   (select-frame-by-name "capture")
   (switch-to-buffer (get-buffer-create "*scratch*"))
-  (org-capture))
+  (if is-roam (org-roam-capture) (org-capture))
+  )
 
 ;; Only works if there's already an other frame:
 (defun make-capture-frame ()
