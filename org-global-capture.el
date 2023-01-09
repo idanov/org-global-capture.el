@@ -31,7 +31,7 @@
   (when (equal "capture" (frame-parameter nil 'name))
     (delete-frame)))
 
-(defun activate-capture-frame (&optional (is-roam nil))
+(defun activate-capture-frame (&optional is-roam)
   "run org-capture in capture frame"
   :type '(boolean)
   (select-frame-by-name "capture")
