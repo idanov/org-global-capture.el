@@ -7,7 +7,7 @@
 
 ;; activated by a keybinding to
 ;; emacsclient -c -F '(quote (name . "capture"))' -e '(activate-capture-frame)'
-;; activated as a org-roam-capture buffer by a keybinding to
+;; activated as a org-roam-dailies-capture-today buffer by a keybinding to
 ;; emacsclient -c -F '(quote (name . "capture"))' -e '(activate-capture-frame t)'
 
 ;;; Code:
@@ -36,7 +36,7 @@
   :type '(boolean)
   (select-frame-by-name "capture")
   (switch-to-buffer (get-buffer-create "*scratch*"))
-  (if is-roam (org-roam-capture) (org-capture))
+  (if is-roam (org-roam-dailies-capture-today) (org-capture))
   )
 
 ;; Only works if there's already an other frame:
