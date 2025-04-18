@@ -12,30 +12,40 @@
 
 ;;; Code:
 
-(defadvice org-switch-to-buffer-other-window
-    (after supress-window-splitting activate)
-  "Delete the extra window if we're in a capture frame"
-  (if (equal "capture" (frame-parameter nil 'name))
-      (delete-other-windows)))
+(defun suppress-window-splitting-advice (&rest _args)
+  "Delete the extra window if we're in a capture frame."
+  (when (equal "capture" (frame-parameter nil 'name))
+    (centaur-tabs-local-mode 1)
+    (maximize-window)
+    (delete-other-windows)))
 
-(defadvice org-capture-finalize
-    (after delete-capture-frame activate)
-  "Advise capture-finalize to close the frame"
+(defun delete-capture-frame-finalize-advice (&rest _args)
+  "Close the frame if it's a capture frame after capture-finalize."
   (when (and (equal "capture" (frame-parameter nil 'name))
              (not (eq this-command 'org-capture-refile)))
-    (delete-frame)))
+    (delete-frame)
+    (kill-buffer "*empty*")))
 
-(defadvice org-capture-refile
-    (after delete-capture-frame activate)
-  "Advise org-refile to close the frame"
+(defun delete-capture-frame-refile-advice (&rest _args)
+  "Close the frame if it's a capture frame after org-refile."
   (when (equal "capture" (frame-parameter nil 'name))
-    (delete-frame)))
+    (delete-frame)
+    (kill-buffer "*empty*")))
+
+(advice-add 'switch-to-buffer-other-window :after #'suppress-window-splitting-advice)
+(advice-add 'org-capture-finalize :after #'delete-capture-frame-finalize-advice)
+(advice-add 'org-capture-refile :after #'delete-capture-frame-refile-advice)
+(advice-add 'org-capture :after #'suppress-window-splitting-advice)
 
 (defun activate-capture-frame (&optional is-roam)
   "run org-capture in capture frame"
   :type '(boolean)
   (select-frame-by-name "capture")
-  (switch-to-buffer (get-buffer-create "*scratch*"))
+  (switch-to-buffer (get-buffer-create "*emtpy*"))
+  (erase-buffer)
+  (read-only-mode 1)
+  (centaur-tabs-local-mode 1)
+  (delete-other-windows)
   (if is-roam (org-roam-dailies-capture-today) (org-capture))
   )
 
